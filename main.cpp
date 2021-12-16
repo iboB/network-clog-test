@@ -43,7 +43,6 @@ public:
     void doSend() {
         std::cout << "Server sending blob\n";
         m_curBuf = getRandomBuf();
-        // wsSend(vstl::make_memory_view(m_curBuf));
         m_ws.text(false);
         m_ws.async_write(
             net::buffer(m_curBuf.data(), m_curBuf.size()),
@@ -100,7 +99,7 @@ public:
 
     Server()
         : m_ctx(1)
-        , m_acceptor(m_ctx, tcp::endpoint(tcp::v4(), 1234))
+        , m_acceptor(m_ctx, tcp::endpoint(tcp::v4(), 7654))
     {
         doAccept();
         m_thread = std::thread([this]() { m_ctx.run(); });
@@ -168,8 +167,9 @@ public:
         if (e == beast::websocket::error::closed) return closed();
         if (e) return failed(e, "read");
 
-        std::cout << "Client received blob of size " << double(m_readBuf.size()) / 1024 << " KB\n   Sleeping now...\n";
-        std::this_thread::sleep_for(std::chrono::milliseconds(500));
+        std::cout << "Client received blob of size " << double(m_readBuf.size()) / 1024 << " KB\n";
+        // std::cout << "  Sleeping now...\n";
+        //std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
         m_readBuf.clear();
         doRead();
@@ -193,7 +193,7 @@ void runClient() {
     net::io_context ctx(1);
 
     std::string addr = "localhost";
-    std::string port = "1234";
+    std::string port = "9654";
     tcp::resolver resolver{ctx};
 
     auto results = resolver.resolve(tcp::v4(), addr, port);
