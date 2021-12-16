@@ -17,9 +17,6 @@ CPMAddPackage(
 add_library(boost-beast INTERFACE)
 target_link_libraries(boost-beast INTERFACE Boost::boost)
 
-set(FISHNETS_SSL OFF)
-CPMAddPackage("gh:iboB/fishnets#d5cbab3b83c372adf3af1d6322e7369ca80e3f30")
-
 add_executable(network-clog-test main.cpp)
-target_link_libraries(network-clog-test fishnets)
+target_link_libraries(network-clog-test boost-beast)
 
