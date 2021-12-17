@@ -19,6 +19,9 @@ target_link_libraries(boost-beast INTERFACE Boost::boost)
 
 find_package(Threads REQUIRED)
 
-add_executable(network-clog-test main.cpp)
-target_link_libraries(network-clog-test boost-beast ${CMAKE_THREAD_LIBS_INIT})
+add_executable(test-boost-beast beast.cpp)
+target_link_libraries(test-boost-beast boost-beast ${CMAKE_THREAD_LIBS_INIT})
+
+add_executable(test-raw-sockets socks.cpp)
+target_link_libraries(test-raw-sockets ${CMAKE_THREAD_LIBS_INIT})
 
