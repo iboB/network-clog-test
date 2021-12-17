@@ -17,6 +17,8 @@ CPMAddPackage(
 add_library(boost-beast INTERFACE)
 target_link_libraries(boost-beast INTERFACE Boost::boost)
 
+find_package(Threads REQUIRED)
+
 add_executable(network-clog-test main.cpp)
-target_link_libraries(network-clog-test boost-beast)
+target_link_libraries(network-clog-test boost-beast ${CMAKE_THREAD_LIBS_INIT})
 

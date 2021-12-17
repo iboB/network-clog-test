@@ -51,7 +51,8 @@ public:
 
     void onCompletedSend(beast::error_code e, size_t) {
         if (e) return failed(e, "write");
-        std::cout << "Server completed send of blob\n";
+        std::cout << "Server sending blob\n";
+        std::cout << "  Server completed send of blob\n";
         ++numSent;
         if (numSent >= 20)
         {
@@ -63,7 +64,20 @@ public:
 
     void onConnectionEstablished(beast::error_code e) {
         if (e) return failed(e, "establish");
-        doSend();
+        //doSend();
+
+        for (int i=0; i<20; ++i) {
+            beast::error_code e;
+            auto vec = getRandomBuf();
+            m_ws.text(false);
+            m_ws.write(
+                net::buffer(vec.data(), vec.size()),
+                e
+            );
+            std::cout << "  Server completed send of blob\n";
+            if (e) return failed(e, "write");
+        }
+
         doRead();
     }
 
@@ -168,8 +182,8 @@ public:
         if (e) return failed(e, "read");
 
         std::cout << "Client received blob of size " << double(m_readBuf.size()) / 1024 << " KB\n";
-        // std::cout << "  Sleeping now...\n";
-        //std::this_thread::sleep_for(std::chrono::milliseconds(500));
+        std::cout << "  Sleeping now...\n";
+        std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
         m_readBuf.clear();
         doRead();
@@ -193,7 +207,7 @@ void runClient() {
     net::io_context ctx(1);
 
     std::string addr = "localhost";
-    std::string port = "9654";
+    std::string port = "7654";
     tcp::resolver resolver{ctx};
 
     auto results = resolver.resolve(tcp::v4(), addr, port);
