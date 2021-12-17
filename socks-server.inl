@@ -14,14 +14,15 @@ static std::vector<uint8_t> getRandomBuf() {
     return buf;
 }
 
-int server() {
+int server(uint64_t port, const int blobs) {
+    printf("Starging server on port %d (blobs to send %d)\n", port, blobs);
     auto sd = socket(AF_INET, SOCK_STREAM, 0);
     if (sd < 0) return puts("socket fail");
 
     sockaddr_in srv = {};
     srv.sin_family = AF_INET;
     srv.sin_addr.s_addr = INADDR_ANY;
-    srv.sin_port = htons(7654);
+    srv.sin_port = htons(port);
 
     int enable = 1;
     if (setsockopt(sd, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int)) < 0) {
@@ -48,12 +49,16 @@ int server() {
         printf("accepted: %d\n", int(data));
     }
 
-    for (int i=0; i<20; ++i) {
+    size_t total = 0;
+    for (int i=0; i<blobs; ++i) {
         auto buf = getRandomBuf();
-        puts("Server sending blob");
+        printf("%d. Server sending %.1f KB blob\n", i, double(buf.size())/1024);
         send(sock, buf.data(), buf.size(), 0);
-        puts("  Server completed send of blob");
+        total += buf.size();
+        printf("  Server completed send of blob (total sent %.1f KB)\n", double(total)/1024);
     }
+
+    puts("Server sending is DONE");
 
     while (true) std::this_thread::yield();
 
