@@ -6,7 +6,7 @@ int main(int argc, char* argv[]) {
     bool sleep = true;
     if (argc > 1) {
         if (argc == 2) {
-            printf("Usage: %s <addr> <port> [sleep]\n");
+            printf("Usage: %s <addr> <port> [sleep]\n", argv[0]);
             return -1;
         }
         addr = argv[1];
@@ -15,7 +15,7 @@ int main(int argc, char* argv[]) {
             sleep = atoi(argv[3]) == 1;
         }
         if (argc > 4) {
-            printf("Usage: %s <addr> <port> [sleep]\n");
+            printf("Usage: %s <addr> <port> [sleep]\n", argv[0]);
             return -1;
         }
     }

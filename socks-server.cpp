@@ -6,7 +6,7 @@ int main(int argc, char* argv[]) {
 
     if (argc > 1) {
         if (argc != 3) {
-            printf("Usage: %s <port> <packets>\n");
+            printf("Usage: %s <port> <packets>\n", argv[0]);
             return -1;
         }
         port = atoi(argv[1]);
