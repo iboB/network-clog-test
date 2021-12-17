@@ -21,6 +21,10 @@ find_package(Threads REQUIRED)
 
 add_executable(test-boost-beast beast.cpp)
 target_link_libraries(test-boost-beast boost-beast ${CMAKE_THREAD_LIBS_INIT})
+add_executable(test-boost-beast-server beast-server.cpp)
+target_link_libraries(test-boost-beast-server boost-beast ${CMAKE_THREAD_LIBS_INIT})
+add_executable(test-boost-beast-client beast-client.cpp)
+target_link_libraries(test-boost-beast-client boost-beast ${CMAKE_THREAD_LIBS_INIT})
 
 if(NOT MSVC)
     add_executable(test-raw-sockets socks.cpp)
