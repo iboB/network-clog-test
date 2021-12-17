@@ -2,6 +2,7 @@ build/
 out/
 
 boost/
+*.exe
 
 # ides
 .vscode/

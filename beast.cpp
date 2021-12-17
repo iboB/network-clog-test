@@ -13,6 +13,8 @@
 #include <thread>
 #include <vector>
 
+#define PROXY 1
+
 namespace net = boost::asio;
 namespace beast = boost::beast;
 using tcp = net::ip::tcp;
@@ -182,8 +184,10 @@ public:
         if (e) return failed(e, "read");
 
         std::cout << "Client received blob of size " << double(m_readBuf.size()) / 1024 << " KB\n";
+#if !PROXY
         std::cout << "  Sleeping now...\n";
         std::this_thread::sleep_for(std::chrono::milliseconds(500));
+#endif
 
         m_readBuf.clear();
         doRead();
@@ -207,7 +211,12 @@ void runClient() {
     net::io_context ctx(1);
 
     std::string addr = "localhost";
-    std::string port = "7654";
+    std::string port =
+#if PROXY
+        "9654";
+#else
+        "7654";
+#endif
     tcp::resolver resolver{ctx};
 
     auto results = resolver.resolve(tcp::v4(), addr, port);
