@@ -6,6 +6,7 @@
 #include <cstdio>
 #include <vector>
 #include <cstdlib>
+#include <chrono>
 
 int client(const char* addr, uint16_t port, bool sleep) {
     printf("Starting client on %s:%d (sleep: %d)\n", addr, port, sleep);
@@ -29,6 +30,8 @@ int client(const char* addr, uint16_t port, bool sleep) {
         printf("connected: %d\n", int(data));
     }
 
+    auto start = std::chrono::system_clock::now().time_since_epoch();
+
     std::vector<uint8_t> buf(600*1024);
     ssize_t total;
     int nrec = 0;
@@ -44,7 +47,10 @@ int client(const char* addr, uint16_t port, bool sleep) {
         }
         total += s;
         ++nrec;
-        printf("%d. Client received %.1f KB (total %.1f KB)\n", nrec, double(s)/1024, double(total)/1024);
+
+        auto time = std::chrono::system_clock::now().time_since_epoch() - start;
+        auto ms = int(std::chrono::duration_cast<std::chrono::milliseconds>(time).count());
+        printf("%d. At %6d client received %.1f KB (total %.1f KB)\n", nrec, ms, double(s)/1024, double(total)/1024);
         if (sleep) std::this_thread::sleep_for(std::chrono::milliseconds(500));
     }
 

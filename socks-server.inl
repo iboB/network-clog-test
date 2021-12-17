@@ -6,6 +6,7 @@
 #include <cstdio>
 #include <vector>
 #include <cstdlib>
+#include <chrono>
 
 static std::vector<uint8_t> getRandomBuf() {
     std::vector<uint8_t> buf;
@@ -49,6 +50,8 @@ int server(uint64_t port, const int blobs) {
         printf("accepted: %d\n", int(data));
     }
 
+    auto start = std::chrono::system_clock::now().time_since_epoch();
+
     size_t total = 0;
     for (int i=0; i<blobs; ++i) {
         auto buf = getRandomBuf();
@@ -58,7 +61,9 @@ int server(uint64_t port, const int blobs) {
         printf("  Server completed send of blob (total sent %.1f KB)\n", double(total)/1024);
     }
 
-    puts("Server sending is DONE");
+    auto time = std::chrono::system_clock::now().time_since_epoch() - start;
+
+    printf("Server sending is DONE for %d ms\n", int(std::chrono::duration_cast<std::chrono::milliseconds>(time).count()));
 
     while (true) std::this_thread::yield();
 
